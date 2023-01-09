@@ -55,9 +55,6 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	// If size of zero shortcircuit to fetch the value without checking
 	// the cache.
 	if c.size == 0 {
-		if c.getter == nil {
-			return "", false
-		}
 		value, _, ok := c.getter()
 		return value, ok
 	}
