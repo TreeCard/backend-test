@@ -38,7 +38,7 @@ func (cv *cacheValue) validAt(at time.Time) bool {
 	if cv.ttl.IsZero() {
 		return true
 	}
-	return cv.ttl.After(at)
+	return cv.ttl.Before(at)
 }
 
 func (c *Cache) remove(e *list.Element) {
