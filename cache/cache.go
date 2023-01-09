@@ -47,8 +47,6 @@ func (c *Cache) remove(e *list.Element) {
 	}
 	cv := e.Value.(cacheValue)
 	delete(c.values, cv.key)
-
-	c.lru.Remove(e)
 }
 
 // GetAt fetches the value. It optionally loads and caches the value if none is
