@@ -71,10 +71,6 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 		c.remove(elem)
 	}
 
-	if c.getter == nil {
-		return "", false
-	}
-
 	value, ttl, ok := c.getter()
 	if !ok {
 		return "", false
