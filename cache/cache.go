@@ -23,7 +23,7 @@ type Cache struct {
 // NewCache creates a limited size cache.
 func NewCache(getter GetterFn, size int) *Cache {
 	return &Cache{
-		size:   size,
+		size:   10,
 		getter: getter,
 	}
 }
@@ -34,11 +34,11 @@ type cacheValue struct {
 	ttl time.Time
 }
 
-func (cv *cacheValue) validAt(at time.Time) bool {
+func (cv *cacheValue) valid() bool {
 	if cv.ttl.IsZero() {
 		return true
 	}
-	return cv.ttl.After(at)
+	return cv.ttl.Before(time.Now())
 }
 
 func (c *Cache) remove(e *list.Element) {
@@ -47,8 +47,6 @@ func (c *Cache) remove(e *list.Element) {
 	}
 	cv := e.Value.(cacheValue)
 	delete(c.values, cv.key)
-
-	c.lru.Remove(e)
 }
 
 // GetAt fetches the value. It optionally loads and caches the value if none is
@@ -57,9 +55,6 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	// If size of zero shortcircuit to fetch the value without checking
 	// the cache.
 	if c.size == 0 {
-		if c.getter == nil {
-			return "", false
-		}
 		value, _, ok := c.getter()
 		return value, ok
 	}
@@ -67,7 +62,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	elem, ok := c.values[key]
 	if ok {
 		cv := elem.Value.(cacheValue)
-		if cv.validAt(at) {
+		if cv.valid() {
 			c.lru.MoveToFront(elem)
 			return cv.val, ok
 		}
@@ -76,18 +71,14 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 		c.remove(elem)
 	}
 
-	if c.getter == nil {
-		return "", false
-	}
-
 	value, ttl, ok := c.getter()
 	if !ok {
 		return "", false
 	}
 
-	l := c.lru.Len() + 1
+	l := c.lru.Len()
 	if l > c.size {
-		c.remove(c.lru.Back())
+		c.remove(c.lru.Front())
 	}
 
 	elem = c.lru.PushFront(cacheValue{
@@ -97,7 +88,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	})
 
 	if c.values == nil {
-		c.values = make(map[string]*list.Element, c.size)
+		c.values = make(map[string]*list.Element)
 	}
 	c.values[key] = elem
 
