@@ -34,11 +34,11 @@ type cacheValue struct {
 	ttl time.Time
 }
 
-func (cv *cacheValue) validAt(at time.Time) bool {
+func (cv *cacheValue) valid() bool {
 	if cv.ttl.IsZero() {
 		return true
 	}
-	return cv.ttl.Before(at)
+	return cv.ttl.Before(time.Now())
 }
 
 func (c *Cache) remove(e *list.Element) {
@@ -65,7 +65,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	elem, ok := c.values[key]
 	if ok {
 		cv := elem.Value.(cacheValue)
-		if cv.validAt(at) {
+		if cv.valid() {
 			c.lru.MoveToFront(elem)
 			return cv.val, ok
 		}
