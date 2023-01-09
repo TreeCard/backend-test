@@ -23,7 +23,7 @@ type Cache struct {
 // NewCache creates a limited size cache.
 func NewCache(getter GetterFn, size int) *Cache {
 	return &Cache{
-		size:   size,
+		size:   10,
 		getter: getter,
 	}
 }
