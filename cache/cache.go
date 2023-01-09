@@ -88,7 +88,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 	})
 
 	if c.values == nil {
-		c.values = make(map[string]*list.Element, c.size)
+		c.values = make(map[string]*list.Element)
 	}
 	c.values[key] = elem
 
