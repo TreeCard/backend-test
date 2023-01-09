@@ -28,6 +28,7 @@ func NewCache(getter GetterFn, size int) *Cache {
 	}
 }
 
+// cacheValue hold the key, value mapping with the optional ttl.
 type cacheValue struct {
 	key string
 	val string
