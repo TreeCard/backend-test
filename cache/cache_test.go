@@ -1,6 +1,7 @@
-package main
+package cache_test
 
 import (
+	"github.com/treecard/backend-test/cache"
 	"testing"
 	"time"
 )
@@ -14,7 +15,7 @@ func TestCache(t *testing.T) {
 		count++
 		return value, time.Time{}, true
 	}
-	c := NewCache(getter, 10)
+	c := cache.NewCache(getter, 10)
 
 	check, ok := c.Get(key)
 	if !ok {
