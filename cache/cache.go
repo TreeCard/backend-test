@@ -78,7 +78,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 
 	l := c.lru.Len()
 	if l > c.size {
-		c.remove(c.lru.Back())
+		c.remove(c.lru.Front())
 	}
 
 	elem = c.lru.PushFront(cacheValue{
