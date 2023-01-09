@@ -76,7 +76,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 		return "", false
 	}
 
-	l := c.lru.Len() + 1
+	l := c.lru.Len()
 	if l > c.size {
 		c.remove(c.lru.Back())
 	}
