@@ -6,7 +6,7 @@ import (
 )
 
 // GetterFn loads data for the key and optionally can set the time to live.
-type GetterFn func() (string, time.Time, bool)
+type GetterFn func(string) (string, time.Time, bool)
 
 // Cache implements a string key value read-through cache.
 //
@@ -53,13 +53,6 @@ func (c *Cache) remove(e *list.Element) {
 // GetAt fetches the value. It optionally loads and caches the value if none is
 // found or the TTL has passed the given time.
 func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
-	// If size of zero shortcircuit to fetch the value without checking
-	// the cache.
-	if c.size == 0 {
-		value, _, ok := c.getter()
-		return value, ok
-	}
-
 	elem, ok := c.values[key]
 	if ok {
 		cv := elem.Value.(cacheValue)
@@ -72,7 +65,7 @@ func (c *Cache) GetAt(key string, at time.Time) (string, bool) {
 		c.remove(elem)
 	}
 
-	value, ttl, ok := c.getter()
+	value, ttl, ok := c.getter(key)
 	if !ok {
 		return "", false
 	}

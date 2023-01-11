@@ -11,7 +11,7 @@ func TestCache(t *testing.T) {
 
 	key := "key"
 	value := "value"
-	getter := func() (string, time.Time, bool) {
+	getter := func(_ string) (string, time.Time, bool) {
 		count++
 		return value, time.Time{}, true
 	}
@@ -28,7 +28,6 @@ func TestCache(t *testing.T) {
 		t.Errorf("count %d times", count)
 	}
 
-	// check get with a nil getter fails
 	check, ok = c.Get(key)
 	if !ok {
 		t.Error("get shouldn't fail")
