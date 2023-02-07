@@ -2,12 +2,15 @@
 
 Welcome to the backend task!
 
+First create the codespace:
+
+![image](./setup.png)
+
 Start by looking in the `cache/` directory. Get up and runnning with tests:
 
 ```sh
 go test ./cache -v
 ```
-
 
 ## Treecard
 
