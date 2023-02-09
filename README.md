@@ -2,11 +2,15 @@
 
 Welcome to the backend task!
 
-First create the codespace:
+1. First create a codespace to edit the code:
+<p align="center">
+  <img src="./setup.png" width="40%" style="max-width:200px">
+</p>
 
-![image](./setup.png)
 
-Start by looking in the `cache/` directory. Get up and runnning with tests:
+2. Start by looking in the `cache/` directory. 
+
+3. Run the code with:
 
 ```sh
 go test ./cache -v
